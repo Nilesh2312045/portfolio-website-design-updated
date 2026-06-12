@@ -15,7 +15,7 @@ export default async function Page() {
         <iframe
           title="Nilesh portfolio"
           srcDoc={portfolioHtml}
-          sandbox="allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox"
+          sandbox="allow-scripts allow-forms allow-popups"
           className="h-full w-full border-0"
         />
       </main>
