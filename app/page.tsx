@@ -14,8 +14,9 @@ export default async function Page() {
       <main className="h-screen w-full">
         <iframe
           title="Interactive RPG-style portfolio showcase"
+          aria-label="Interactive RPG-style portfolio showcase"
           srcDoc={portfolioHtml}
-          sandbox="allow-scripts allow-forms allow-popups"
+          sandbox="allow-scripts allow-forms"
           className="h-full w-full border-0"
         />
       </main>
