@@ -166,9 +166,35 @@
        HERO
     ============================================================ */
     #hero {
-      min-height: 100vh; display: flex; flex-direction: column;
+      position: relative;
+      height: 100vh; overflow: hidden;
+      padding-top: 70px;
+    }
+    /* Split two-column grid */
+    .hero-grid {
+      position: relative; z-index: 6;
+      height: 100%;
+      display: grid; grid-template-columns: 1fr 1fr;
+    }
+    .hero-left {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 0 clamp(24px, 5vw, 80px);
+      height: 100%;
+    }
+    .hero-right {
+      display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      padding-top: 90px; overflow: hidden;
+      gap: 18px; height: 100%;
+      padding: 0 clamp(16px, 3vw, 40px);
+    }
+    /* Right-column floating data chips */
+    .data-chips { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; z-index: 6; }
+    .data-chips .chip {
+      font-family: var(--font-px); font-size: 8px; color: var(--cyan);
+      background: rgba(0,212,255,0.06);
+      border: 2px solid var(--cyan); padding: 9px 12px;
+      box-shadow: 3px 3px 0 0 rgba(0,0,0,0.5);
+      letter-spacing: 1px;
     }
     /* Parallax cityscape layers */
     .city {
@@ -209,8 +235,8 @@
     /* Three.js mount point */
     #orb-canvas {
       position: relative; z-index: 5; overflow: visible;
-      width: min(460px, 88vw); height: min(460px, 88vw);
-      min-height: 420px;
+      width: min(440px, 80%); height: min(440px, 60vh);
+      min-height: 340px;
       display: flex; align-items: center; justify-content: center;
       cursor: grab;
     }
@@ -232,11 +258,41 @@
     /* Player card */
     .player-card {
       position: relative; z-index: 6;
-      width: min(420px, 92vw); margin-top: -10px;
+      width: min(440px, 100%);
       padding: 26px 28px; text-align: left;
     }
     .player-card .ptag { font-family: var(--font-px); font-size: 11px; color: var(--gold); }
+    /* Pixel avatar placeholder */
+    .player-card .avatar {
+      width: 48px; height: 48px; margin-bottom: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-px); font-size: 11px; color: var(--gold);
+      border: 3px solid var(--cyan); background: #050811;
+      box-shadow: 0 0 12px rgba(0,212,255,0.4);
+    }
+    .player-card .name-wrap { display: flex; align-items: center; gap: 6px; }
     .player-card h1 { font-family: var(--font-px); font-size: 22px; color: #fff; margin: 14px 0 8px; }
+    .player-card .cursor {
+      display: inline-block; width: 3px; height: 28px; background: var(--cyan);
+      margin: 14px 0 8px; animation: blink-cursor 0.8s step-end infinite;
+    }
+    @keyframes blink-cursor { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+    /* Inline stat badges below START */
+    .stat-badges { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .stat-badges .badge {
+      font-family: var(--font-px); font-size: 7px; color: var(--gold);
+      background: var(--card-2); border: 2px solid var(--border);
+      padding: 8px 10px; letter-spacing: 1px;
+    }
+    /* Social quick-link controller buttons */
+    .player-socials { display: flex; gap: 10px; margin-top: 16px; }
+    .player-socials a {
+      width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-px); font-size: 9px; color: var(--cyan);
+      border: 2px solid var(--cyan); background: #050811;
+      transition: all 0.12s ease;
+    }
+    .player-socials a:hover { background: var(--cyan); color: #000; }
     .player-card .row { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-family: var(--font-px); font-size: 8px; color: var(--muted); padding: 9px 0; border-bottom: 1px dashed var(--border); }
     .player-card .row span:last-child { font-family: var(--font-px); font-size: 10px; color: var(--cyan); letter-spacing: 0.05em; line-height: 1.6; text-align: right; }
     .player-card .xp-label { font-family: var(--font-px); font-size: 8px; color: var(--cyan); margin: 14px 0 6px; }
@@ -252,6 +308,66 @@
     }
     .start-btn:hover { animation: pulse 0.7s ease infinite; }
     @keyframes pulse { 0%,100% { transform: translate(0,0); box-shadow: 6px 6px 0 0 rgba(0,0,0,0.6);} 50% { transform: translate(2px,2px); box-shadow: 3px 3px 0 0 rgba(0,0,0,0.6);} }
+
+    /* ============================================================
+       HERO HUD / ATMOSPHERE
+    ============================================================ */
+    /* Scanline overlay */
+    .scanlines {
+      position: absolute; inset: 0; z-index: 4; pointer-events: none;
+      background: repeating-linear-gradient(
+        transparent 0px, transparent 3px,
+        rgba(0,0,0,0.15) 3px, rgba(0,0,0,0.15) 4px
+      );
+    }
+    /* Corner HUD elements */
+    .hud { position: absolute; z-index: 7; pointer-events: none; font-family: var(--font-px); }
+    .hud-tl { top: 84px; left: clamp(16px, 4vw, 48px); }
+    .hud-tl .label { font-size: 8px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+    .hud-dot {
+      width: 7px; height: 7px; background: var(--green); display: inline-block;
+      box-shadow: 0 0 6px var(--green); animation: blink-cursor 1s step-end infinite;
+    }
+    .hud-tr { top: 84px; right: clamp(16px, 4vw, 48px); text-align: right; }
+    .hud-tr .session { font-size: 6px; color: var(--cyan); animation: blink-cursor 1.2s step-end infinite; }
+    /* System status mini panel */
+    .hud-br {
+      bottom: 70px; right: clamp(16px, 4vw, 48px);
+      background: rgba(5,8,17,0.85); border: 2px solid var(--cyan);
+      box-shadow: 0 0 14px rgba(0,212,255,0.25);
+      padding: 12px 14px; display: flex; flex-direction: column; gap: 8px;
+    }
+    .hud-br .sys-row { display: flex; align-items: center; gap: 8px; font-size: 6px; color: var(--cyan); }
+    .hud-br .sys-row .k { width: 22px; }
+    .hud-br .sys-row .pct { color: var(--gold); }
+    /* Floating cyan diamond particles */
+    .diamonds { position: absolute; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
+    .diamonds i {
+      position: absolute; bottom: -20px; width: 10px; height: 10px;
+      background: var(--cyan); transform: rotate(45deg);
+      box-shadow: 0 0 10px rgba(0,212,255,0.7); opacity: 0;
+      animation: float-diamond linear infinite;
+    }
+    @keyframes float-diamond {
+      0%   { transform: translateY(0) rotate(45deg); opacity: 0; }
+      10%  { opacity: 0.7; }
+      90%  { opacity: 0.4; }
+      100% { transform: translateY(-100vh) rotate(45deg); opacity: 0; }
+    }
+    /* Scrolling ticker bar */
+    .ticker {
+      position: absolute; left: 0; right: 0; bottom: 0; z-index: 8;
+      background: var(--gold); overflow: hidden;
+      border-top: 3px solid #000; border-bottom: 3px solid #000;
+      padding: 7px 0;
+    }
+    .ticker .track {
+      display: inline-flex; white-space: nowrap;
+      font-family: var(--font-px); font-size: 7px; color: #000;
+      animation: ticker-scroll 30s linear infinite;
+    }
+    .ticker .track span { padding-right: 0; }
+    @keyframes ticker-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
     /* ============================================================
        SKILLS — ABILITY TREE
@@ -403,7 +519,7 @@
     @media (max-width: 760px) {
       .training-grid { grid-template-columns: 1fr; }
       .battle .mini-row { grid-template-columns: 1fr; }
-      #orb-canvas { min-height: 320px; }
+      #orb-canvas { min-height: 300px; }
       nav .links { display: none; }
       nav .links.open {
         display: flex; flex-direction: column; position: absolute;
@@ -412,6 +528,14 @@
       }
       .nav-toggle { display: block; }
       nav .xp { display: none; }
+      /* HERO — single column vertical layout on mobile */
+      #hero { height: auto; min-height: 100vh; }
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-left { padding: 24px 18px 8px; }
+      .hero-right { padding: 8px 18px 80px; }
+      .player-card { width: 100%; margin: 0 auto; }
+      /* hide cityscape parallax + corner panels for performance/space */
+      .city, .hud-br { display: none; }
     }
 
     /* ============================================================
@@ -547,21 +671,74 @@
   <!-- HERO -->
   <section id="hero">
     <div class="stars"></div>
-    <div class="city city-1" data-depth="0.06"></div>
-    <div class="city city-2" data-depth="0.12"></div>
-    <div class="city city-3" data-depth="0.2"></div>
+    <div class="city city-1" data-depth="0.02"></div>
+    <div class="city city-2" data-depth="0.05"></div>
+    <div class="city city-3" data-depth="0.08"></div>
 
-    <div id="orb-canvas"></div>
+    <!-- floating cyan diamonds -->
+    <div class="diamonds">
+      <i style="left:12%; animation-duration:14s; animation-delay:0s;"></i>
+      <i style="left:24%; animation-duration:18s; animation-delay:3s;"></i>
+      <i style="left:42%; animation-duration:16s; animation-delay:6s;"></i>
+      <i style="left:58%; animation-duration:20s; animation-delay:1s;"></i>
+      <i style="left:71%; animation-duration:15s; animation-delay:8s;"></i>
+      <i style="left:85%; animation-duration:19s; animation-delay:4s;"></i>
+      <i style="left:93%; animation-duration:17s; animation-delay:10s;"></i>
+    </div>
 
-    <div class="player-card pixel-box reveal">
-      <div class="ptag">PLAYER_01</div>
-      <h1>NILESH</h1>
-      <div class="row"><span>CLASS</span><span class="cyan">FULL-STACK ENG. / AI-ML EXPLORER</span></div>
-      <div class="row"><span>LEVEL</span><span class="gold">LVL 4  ·  FINAL YEAR</span></div>
-      <div class="row"><span>GUILD</span><span>SSN CE  ·  B.TECH IT</span></div>
-      <div class="xp-label">XP — PLACEMENT SEASON 2026</div>
-      <div class="xpbar"><i id="hero-xp"></i></div>
-      <button class="start-btn" onclick="document.getElementById('quests').scrollIntoView()">▶ START</button>
+    <!-- corner HUD -->
+    <div class="hud hud-tl"><div class="label"><span class="hud-dot"></span>// PLAYER_DATA</div></div>
+    <div class="hud hud-tr"><div class="session">SESSION: ACTIVE</div></div>
+    <div class="hud hud-br">
+      <div class="sys-row"><span class="k">CPU</span><span>[████░░]</span><span class="pct">67%</span></div>
+      <div class="sys-row"><span class="k">RAM</span><span>[███░░░]</span><span class="pct">54%</span></div>
+      <div class="sys-row"><span class="k">XP</span><span>[██░░░░]</span><span class="pct">32%</span></div>
+    </div>
+
+    <div class="hero-grid">
+      <!-- LEFT COLUMN -->
+      <div class="hero-left">
+        <div class="player-card pixel-box reveal">
+          <div class="avatar">P1</div>
+          <div class="ptag">PLAYER_01</div>
+          <div class="name-wrap"><h1>NILESH</h1><span class="cursor"></span></div>
+          <div class="row"><span>CLASS</span><span class="cyan">FULL-STACK ENG. / AI-ML EXPLORER</span></div>
+          <div class="row"><span>LEVEL</span><span class="gold">LVL 4  ·  FINAL YEAR</span></div>
+          <div class="row"><span>GUILD</span><span>SSN CE  ·  B.TECH IT</span></div>
+          <div class="xp-label">XP — PLACEMENT SEASON 2026</div>
+          <div class="xpbar"><i id="hero-xp"></i></div>
+          <button class="start-btn" onclick="document.getElementById('quests').scrollIntoView()">▶ START</button>
+          <div class="stat-badges">
+            <span class="badge">⚔️ 320+ PROBLEMS SLAIN</span>
+            <span class="badge">🏆 6TH NATIONALLY</span>
+          </div>
+          <div class="player-socials">
+            <a href="https://github.com/NileshSree1072" target="_blank" rel="noreferrer" aria-label="GitHub">GH</a>
+            <a href="https://linkedin.com/in/nilesh" target="_blank" rel="noreferrer" aria-label="LinkedIn">LI</a>
+            <a href="https://leetcode.com/u/yzbgMujZug" target="_blank" rel="noreferrer" aria-label="LeetCode">LC</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div class="hero-right">
+        <div id="orb-canvas"></div>
+        <div class="data-chips">
+          <span class="chip">FULL-STACK</span>
+          <span class="chip">AI-ML</span>
+          <span class="chip">ROBOTICS</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="scanlines"></div>
+
+    <!-- recruiter ticker -->
+    <div class="ticker">
+      <div class="track">
+        <span>⚔️ OPEN TO SWE INTERNSHIPS &amp; PLACEMENTS&nbsp;·&nbsp;320+ LEETCODE PROBLEMS&nbsp;·&nbsp;RANKED 6TH NATIONALLY&nbsp;·&nbsp;FULL-STACK&nbsp;·&nbsp;AI-ML&nbsp;·&nbsp;ROBOTICS&nbsp;·&nbsp;B.TECH IT&nbsp;·&nbsp;SSN CE&nbsp;·&nbsp;DE SHAW PLACEMENT PREP ACTIVE&nbsp;·&nbsp;</span>
+        <span>⚔️ OPEN TO SWE INTERNSHIPS &amp; PLACEMENTS&nbsp;·&nbsp;320+ LEETCODE PROBLEMS&nbsp;·&nbsp;RANKED 6TH NATIONALLY&nbsp;·&nbsp;FULL-STACK&nbsp;·&nbsp;AI-ML&nbsp;·&nbsp;ROBOTICS&nbsp;·&nbsp;B.TECH IT&nbsp;·&nbsp;SSN CE&nbsp;·&nbsp;DE SHAW PLACEMENT PREP ACTIVE&nbsp;·&nbsp;</span>
+      </div>
     </div>
   </section>
 
