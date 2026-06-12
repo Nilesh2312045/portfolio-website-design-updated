@@ -13,7 +13,7 @@ export default async function Page() {
     return (
       <main className="h-screen w-full">
         <iframe
-          title="Nilesh portfolio"
+          title="Interactive RPG-style portfolio showcase"
           srcDoc={portfolioHtml}
           sandbox="allow-scripts allow-forms allow-popups"
           className="h-full w-full border-0"
